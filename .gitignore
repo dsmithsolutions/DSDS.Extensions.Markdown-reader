@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+
+# Compiled output
+out/
+dist/
+
+# VS Code extension packaging
+*.vsix
+
+# VS Code test runner
+.vscode-test/
+.vscode-test-web/
+
+# Coverage
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# TypeScript incremental build info
+*.tsbuildinfo
+
+# Environment
+.env
+.env.local
+.github/
+AGENTS.md

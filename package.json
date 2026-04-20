@@ -1,0 +1,87 @@
+{
+  "name": "dsds-extensions-markdown-reader",
+  "displayName": "ADO Markdown Reader",
+  "description": "Preview Markdown files using Azure DevOps rendering conventions",
+  "publisher": "dsmithsolutions",
+  "version": "1.0.0",
+  "license": "MIT",
+  "keywords": ["markdown", "azure devops", "ado", "wiki", "preview"],
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Formatters",
+    "Visualization"
+  ],
+  "icon": "media/icon.png",
+  "galleryBanner": {
+    "color": "#0078d4",
+    "theme": "dark"
+  },
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "customEditors": [
+      {
+        "viewType": "dsds.adoMarkdownPreview",
+        "displayName": "ADO Markdown Preview",
+        "selector": [
+          {
+            "filenamePattern": "*.md"
+          }
+        ],
+        "priority": "option"
+      }
+    ],
+    "commands": [
+      {
+        "command": "dsds.openAdoPreview",
+        "title": "Open as ADO Preview",
+        "category": "ADO Markdown"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "dsds.openAdoPreview",
+          "when": "resourceExtname == .md",
+          "group": "z_ado"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "dsds.openAdoPreview",
+          "when": "resourceExtname == .md",
+          "group": "z_ado"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./ && node_modules/.bin/esbuild src/extension.ts --bundle --platform=node --format=cjs --external:vscode --outfile=out/extension.js --target=node18 && node_modules/.bin/esbuild src/webview/main.ts --bundle --platform=browser --format=iife --outfile=out/webview/main.js --target=es2022",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package --no-rewrite-relative-links --allow-missing-repository",
+    "publish": "vsce publish --allow-missing-repository --baseImagesUrl https://raw.githubusercontent.com/dsmithsolutions/ado-markdown-reader/main",
+    "login": "vsce login dsmithsolutions",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/dompurify": "^3.0.0",
+    "@types/markdown-it": "^14.0.0",
+    "@types/mocha": "^10.0.0",
+    "@types/node": "^25.6.0",
+    "@types/vscode": "^1.90.0",
+    "@vscode/test-electron": "^2.4.0",
+    "@vscode/vsce": "^3.0.0",
+    "esbuild": "^0.21.0",
+    "mocha": "^10.0.0",
+    "typescript": "^5.4.0"
+  },
+  "dependencies": {
+    "dompurify": "^3.1.0",
+    "katex": "^0.16.0",
+    "markdown-it": "^14.0.0",
+    "markdown-it-emoji": "^3.0.0",
+    "mermaid": "^11.0.0"
+  }
+}

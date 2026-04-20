@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/Users/dave/Documents/Personal/DSDS.Extensions.Markdown-reader/node_modules/katex/dist/katex.min.css">
+  <style>/* ADO Markdown Reader — webview styles
+   Approximates the typography and layout of Azure DevOps wiki pages.
+*/
+
+/* ─── Reset & base ──────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 24px 32px;
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--vscode-editor-foreground, #1b1b1b);
+  background-color: var(--vscode-editor-background, #ffffff);
+  max-width: 960px;
+}
+
+/* ─── Headings ──────────────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  line-height: 1.25;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+h1 { font-size: 2em;    border-bottom: 1px solid var(--vscode-panel-border, #e1e4e8); padding-bottom: 0.3em; }
+h2 { font-size: 1.5em;  border-bottom: 1px solid var(--vscode-panel-border, #e1e4e8); padding-bottom: 0.3em; }
+h3 { font-size: 1.25em; }
+h4 { font-size: 1em; }
+h5 { font-size: 0.875em; }
+h6 { font-size: 0.85em; color: #6a737d; }
+
+/* ─── Paragraphs & inline ───────────────────────────────────────────── */
+p { margin: 0 0 1em; }
+
+a { color: var(--vscode-textLink-foreground, #0078d4); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+strong { font-weight: 600; }
+em     { font-style: italic; }
+del    { text-decoration: line-through; }
+
+/* ─── Code ──────────────────────────────────────────────────────────── */
+code, kbd, samp {
+  font-family: "Cascadia Code", "Cascadia Mono", Consolas, "Courier New", monospace;
+  font-size: 0.9em;
+  background: var(--vscode-textCodeBlock-background, #f3f3f3);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+}
+
+pre {
+  background: var(--vscode-textCodeBlock-background, #f3f3f3);
+  border: 1px solid var(--vscode-panel-border, #dde1e5);
+  border-radius: 4px;
+  padding: 12px 16px;
+  overflow-x: auto;
+  margin: 0 0 1em;
+}
+
+pre code {
+  background: transparent;
+  padding: 0;
+  font-size: 0.9em;
+}
+
+/* ─── Block quotes ──────────────────────────────────────────────────── */
+blockquote {
+  margin: 0 0 1em;
+  padding: 0.5em 1em;
+  border-left: 4px solid var(--vscode-panel-border, #dde1e5);
+  color: #6a737d;
+}
+
+blockquote > :last-child { margin-bottom: 0; }
+
+/* ─── Lists ─────────────────────────────────────────────────────────── */
+ul, ol {
+  margin: 0 0 1em;
+  padding-left: 2em;
+}
+
+li + li { margin-top: 0.25em; }
+
+/* Task lists */
+ul.task-list { list-style: none; padding-left: 1.5em; }
+ul.task-list li input[type="checkbox"] { margin-right: 0.4em; }
+
+/* ─── Tables ────────────────────────────────────────────────────────── */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0 0 1em;
+  font-size: 0.95em;
+}
+
+th, td {
+  border: 1px solid var(--vscode-panel-border, #c8c8c8);
+  padding: 6px 12px;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background: var(--vscode-list-hoverBackground, #f0f0f0);
+  font-weight: 600;
+}
+
+/* Alternating row shading */
+tbody tr:nth-child(even) {
+  background: var(--vscode-list-inactiveSelectionBackground, #f7f7f7);
+}
+
+/* ─── Horizontal rule ───────────────────────────────────────────────── */
+hr {
+  border: none;
+  border-top: 1px solid var(--vscode-panel-border, #dde1e5);
+  margin: 1.5em 0;
+}
+
+/* ─── Images ────────────────────────────────────────────────────────── */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ─── Collapsible sections (<details>) ─────────────────────────────── */
+details {
+  border: 1px solid var(--vscode-panel-border, #dde1e5);
+  border-radius: 4px;
+  padding: 8px 12px;
+  margin: 0 0 1em;
+}
+
+summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+details[open] summary { margin-bottom: 8px; }
+
+/* ─── Mermaid diagrams ──────────────────────────────────────────────── */
+[data-mermaid] {
+  overflow-x: auto;
+  text-align: center;
+  margin: 0 0 1em;
+}
+
+/* ─── KaTeX math ────────────────────────────────────────────────────── */
+[data-katex-display] {
+  display: block;
+  overflow-x: auto;
+  margin: 1em 0;
+  text-align: center;
+}
+
+/* ─── TOC ───────────────────────────────────────────────────────────── */
+nav.toc {
+  background: var(--vscode-textCodeBlock-background, #f3f3f3);
+  border: 1px solid var(--vscode-panel-border, #dde1e5);
+  border-radius: 4px;
+  padding: 12px 16px;
+  display: inline-block;
+  min-width: 200px;
+  margin: 0 0 1em;
+}
+
+nav.toc ol, nav.toc ul {
+  margin: 0;
+  padding-left: 1.25em;
+}
+
+nav.toc > p { font-weight: 600; margin-bottom: 0.5em; }
+</style>
+  <title>ADO Preview Debug</title>
+</head>
+<body>
+  <div id="preview"><h1 id="ado-markdown-sample">ADO Markdown Sample</h1>
+<p>This file demonstrates all Azure DevOps Markdown features supported by this extension.</p>
+<hr>
+<h2 id="1.-basic-formatting">1. Basic Formatting</h2>
+<p><strong>Bold text</strong>, <em>italic text</em>, <s>strikethrough</s>, and <code>inline code</code>.</p>
+<blockquote>
+<p>Blockquote example — ADO renders these with a left border.</p>
+</blockquote>
+<hr>
+<h2 id="2.-line-breaks-(ado-style)">2. Line Breaks (ADO Style)</h2>
+<p>ADO only creates a <code>&lt;br&gt;</code> when you use <strong>two trailing spaces</strong>:</p>
+<p>Line one (no break follows — lines merge)
+Line two (still the same paragraph)</p>
+<p>Line one with two trailing spaces<br>
+Line two (this is on a new line)</p>
+<hr>
+<h2 id="3.-image-with-size">3. Image with Size</h2>
+<p>![VS Code logo](<a href="https://code.visualstudio.com/assets/images/code-stable.png">https://code.visualstudio.com/assets/images/code-stable.png</a> =120x120)</p>
+<p>Caption: sized to 120×120 via <code>=120x120</code> suffix.</p>
+<hr>
+<h2 id="4.-mathematical-notation-(katex)">4. Mathematical Notation (KaTeX)</h2>
+<p>Inline math: <span data-katex-inline>E = mc^2</span></p>
+<p>Block math:</p>
+<div data-katex-display>\int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi}</div>
+<hr>
+<h2 id="5.-mermaid-diagram">5. Mermaid Diagram</h2>
+<div class="ado-mermaid" data-mermaid>sequenceDiagram
+  participant User
+  participant Extension
+  participant Renderer
+  User-&gt;&gt;Extension: Open .md file
+  Extension-&gt;&gt;Renderer: render(markdown)
+  Renderer--&gt;&gt;Extension: HTML string
+  Extension--&gt;&gt;User: Webview panel
+</div>
+<hr>
+<h2 id="6.-table-of-contents">6. Table of Contents</h2>
+<nav class="toc">
+<p>Contents</p>
+<ul>
+<li><a href="#ado-markdown-sample">ADO Markdown Sample</a></li>
+<ul>
+<li><a href="#1.-basic-formatting">1. Basic Formatting</a></li>
+<li><a href="#2.-line-breaks-(ado-style)">2. Line Breaks (ADO Style)</a></li>
+<li><a href="#3.-image-with-size">3. Image with Size</a></li>
+<li><a href="#4.-mathematical-notation-(katex)">4. Mathematical Notation (KaTeX)</a></li>
+<li><a href="#5.-mermaid-diagram">5. Mermaid Diagram</a></li>
+<li><a href="#6.-table-of-contents">6. Table of Contents</a></li>
+<li><a href="#7.-emoji">7. Emoji</a></li>
+<li><a href="#8.-tables">8. Tables</a></li>
+<li><a href="#9.-collapsible-section">9. Collapsible Section</a></li>
+<li><a href="#10.-code-blocks">10. Code Blocks</a></li>
+<li><a href="#11.-task-list">11. Task List</a></li>
+<li><a href="#12.-anchor-links">12. Anchor Links</a></li>
+</ul>
+</ul>
+</nav>
+<hr>
+<h2 id="7.-emoji">7. Emoji</h2>
+<p>😄 🚀 ✅ ⚠️ 🎉</p>
+<p>Escaped: :not-an-emoji:</p>
+<hr>
+<h2 id="8.-tables">8. Tables</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th style="text-align:center">Standard MD</th>
+<th style="text-align:center">ADO</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Line breaks</td>
+<td style="text-align:center">Single <code>\n</code></td>
+<td style="text-align:center">2 spaces</td>
+</tr>
+<tr>
+<td>Image sizing</td>
+<td style="text-align:center">✗</td>
+<td style="text-align:center">✓</td>
+</tr>
+<tr>
+<td>Mermaid (<code>:::</code>)</td>
+<td style="text-align:center">✗</td>
+<td style="text-align:center">✓</td>
+</tr>
+<tr>
+<td>KaTeX math</td>
+<td style="text-align:center">✗</td>
+<td style="text-align:center">✓</td>
+</tr>
+<tr>
+<td><code>[[_TOC_]]</code></td>
+<td style="text-align:center">✗</td>
+<td style="text-align:center">✓</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="9.-collapsible-section">9. Collapsible Section</h2>
+<details>
+<summary>Click to expand</summary>
+<p>This content is hidden until the user clicks the summary.</p>
+<ul>
+<li>Item A</li>
+<li>Item B</li>
+<li>Item C</li>
+</ul>
+</details>
+<hr>
+<h2 id="10.-code-blocks">10. Code Blocks</h2>
+<pre><code class="language-typescript">export function createRenderer(): MarkdownIt {
+  const md = new MarkdownIt({ html: true });
+  md.use(adoMathPlugin);
+  md.use(adoMermaidPlugin);
+  return md;
+}
+</code></pre>
+<pre><code class="language-json">{
+  &quot;publisher&quot;: &quot;DSDS&quot;,
+  &quot;name&quot;: &quot;dsds-extensions-markdown-reader&quot;
+}
+</code></pre>
+<hr>
+<h2 id="11.-task-list">11. Task List</h2>
+<ul>
+<li>[x] Implement renderer plugins</li>
+<li>[x] Implement extension entry point</li>
+<li>[ ] Publish to VS Code Marketplace</li>
+</ul>
+<hr>
+<h2 id="12.-anchor-links">12. Anchor Links</h2>
+<p>Jump to sections: <a href="#basic-formatting">Basic Formatting</a> · <a href="#tables">Tables</a> · <a href="#emoji">Emoji</a></p>
+<hr>
+<p><em>Rendered by the ADO Markdown Reader extension.</em></p>
+</div>
+  <script src="/Users/dave/Documents/Personal/DSDS.Extensions.Markdown-reader/node_modules/katex/dist/katex.min.js"></script>
+  <script src="/Users/dave/Documents/Personal/DSDS.Extensions.Markdown-reader/node_modules/mermaid/dist/mermaid.min.js"></script>
+  <script>"use strict";
+(() => {
+  // src/webview/main.ts
+  (async () => {
+    document.querySelectorAll("[data-katex-inline]").forEach((el) => {
+      const src = el.textContent ?? "";
+      try {
+        katex.render(src, el, { throwOnError: false });
+      } catch {
+      }
+    });
+    document.querySelectorAll("[data-katex-display]").forEach((el) => {
+      const src = el.textContent ?? "";
+      try {
+        katex.render(src, el, { throwOnError: false, displayMode: true });
+      } catch {
+      }
+    });
+    mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: "loose",
+      theme: "dark"
+    });
+    const mermaidNodes = document.querySelectorAll(".ado-mermaid");
+    if (mermaidNodes.length > 0) {
+      await mermaid.run({ nodes: mermaidNodes });
+    }
+  })();
+})();
+</script>
+</body>
+</html>

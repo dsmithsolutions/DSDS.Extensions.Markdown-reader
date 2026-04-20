@@ -1,0 +1,176 @@
+/* ADO Markdown Reader — webview styles
+   Approximates the typography and layout of Azure DevOps wiki pages.
+*/
+
+/* ─── Reset & base ──────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 24px 32px;
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--vscode-editor-foreground, #1b1b1b);
+  background-color: var(--vscode-editor-background, #ffffff);
+  max-width: 960px;
+}
+
+/* ─── Headings ──────────────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  line-height: 1.25;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+h1 { font-size: 2em;    border-bottom: 1px solid var(--vscode-panel-border, #e1e4e8); padding-bottom: 0.3em; }
+h2 { font-size: 1.5em;  border-bottom: 1px solid var(--vscode-panel-border, #e1e4e8); padding-bottom: 0.3em; }
+h3 { font-size: 1.25em; }
+h4 { font-size: 1em; }
+h5 { font-size: 0.875em; }
+h6 { font-size: 0.85em; color: #6a737d; }
+
+/* ─── Paragraphs & inline ───────────────────────────────────────────── */
+p { margin: 0 0 1em; }
+
+a { color: var(--vscode-textLink-foreground, #0078d4); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+strong { font-weight: 600; }
+em     { font-style: italic; }
+del    { text-decoration: line-through; }
+
+/* ─── Code ──────────────────────────────────────────────────────────── */
+code, kbd, samp {
+  font-family: "Cascadia Code", "Cascadia Mono", Consolas, "Courier New", monospace;
+  font-size: 0.9em;
+  background: var(--vscode-textCodeBlock-background, #f3f3f3);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+}
+
+pre {
+  background: var(--vscode-textCodeBlock-background, #f3f3f3);
+  border: 1px solid var(--vscode-panel-border, #dde1e5);
+  border-radius: 4px;
+  padding: 12px 16px;
+  overflow-x: auto;
+  margin: 0 0 1em;
+}
+
+pre code {
+  background: transparent;
+  padding: 0;
+  font-size: 0.9em;
+}
+
+/* ─── Block quotes ──────────────────────────────────────────────────── */
+blockquote {
+  margin: 0 0 1em;
+  padding: 0.5em 1em;
+  border-left: 4px solid var(--vscode-panel-border, #dde1e5);
+  color: #6a737d;
+}
+
+blockquote > :last-child { margin-bottom: 0; }
+
+/* ─── Lists ─────────────────────────────────────────────────────────── */
+ul, ol {
+  margin: 0 0 1em;
+  padding-left: 2em;
+}
+
+li + li { margin-top: 0.25em; }
+
+/* Task lists */
+ul.task-list { list-style: none; padding-left: 1.5em; }
+ul.task-list li input[type="checkbox"] { margin-right: 0.4em; }
+
+/* ─── Tables ────────────────────────────────────────────────────────── */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0 0 1em;
+  font-size: 0.95em;
+}
+
+th, td {
+  border: 1px solid var(--vscode-panel-border, #c8c8c8);
+  padding: 6px 12px;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background: var(--vscode-list-hoverBackground, #f0f0f0);
+  font-weight: 600;
+}
+
+/* Alternating row shading */
+tbody tr:nth-child(even) {
+  background: var(--vscode-list-inactiveSelectionBackground, #f7f7f7);
+}
+
+/* ─── Horizontal rule ───────────────────────────────────────────────── */
+hr {
+  border: none;
+  border-top: 1px solid var(--vscode-panel-border, #dde1e5);
+  margin: 1.5em 0;
+}
+
+/* ─── Images ────────────────────────────────────────────────────────── */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ─── Collapsible sections (<details>) ─────────────────────────────── */
+details {
+  border: 1px solid var(--vscode-panel-border, #dde1e5);
+  border-radius: 4px;
+  padding: 8px 12px;
+  margin: 0 0 1em;
+}
+
+summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+details[open] summary { margin-bottom: 8px; }
+
+/* ─── Mermaid diagrams ──────────────────────────────────────────────── */
+[data-mermaid] {
+  overflow-x: auto;
+  text-align: center;
+  margin: 0 0 1em;
+}
+
+/* ─── KaTeX math ────────────────────────────────────────────────────── */
+[data-katex-display] {
+  display: block;
+  overflow-x: auto;
+  margin: 1em 0;
+  text-align: center;
+}
+
+/* ─── TOC ───────────────────────────────────────────────────────────── */
+nav.toc {
+  background: var(--vscode-textCodeBlock-background, #f3f3f3);
+  border: 1px solid var(--vscode-panel-border, #dde1e5);
+  border-radius: 4px;
+  padding: 12px 16px;
+  display: inline-block;
+  min-width: 200px;
+  margin: 0 0 1em;
+}
+
+nav.toc ol, nav.toc ul {
+  margin: 0;
+  padding-left: 1.25em;
+}
+
+nav.toc > p { font-weight: 600; margin-bottom: 0.5em; }
