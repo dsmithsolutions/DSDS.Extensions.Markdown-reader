@@ -12,6 +12,7 @@ import { getWebviewContent } from './getWebviewContent.js';
 export class AdoPreviewPanel {
   private readonly _panel: vscode.WebviewPanel;
   private readonly _extensionUri: vscode.Uri;
+  private readonly _filename: string;
   private readonly _renderer = createRenderer();
   private _disposables: vscode.Disposable[] = [];
 
@@ -24,6 +25,7 @@ export class AdoPreviewPanel {
   ) {
     this._panel = panel;
     this._extensionUri = extensionUri;
+    this._filename = document.uri.path.split('/').pop() ?? document.uri.fsPath;
 
     this._panel.webview.options = {
       enableScripts: true,
@@ -59,6 +61,7 @@ export class AdoPreviewPanel {
       webview: this._panel.webview,
       extensionUri: this._extensionUri,
       renderedHtml: sanitized,
+      filename: this._filename,
     });
   }
 
