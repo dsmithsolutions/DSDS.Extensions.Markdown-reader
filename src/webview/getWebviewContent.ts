@@ -5,6 +5,7 @@ export interface WebviewContentOptions {
   webview: vscode.Webview;
   extensionUri: vscode.Uri;
   renderedHtml: string;
+  filename?: string;
 }
 
 /**
@@ -16,7 +17,8 @@ export interface WebviewContentOptions {
  *  - Rendered HTML is passed in already-sanitised by the caller
  */
 export function getWebviewContent(opts: WebviewContentOptions): string {
-  const { webview, extensionUri, renderedHtml } = opts;
+  const { webview, extensionUri, renderedHtml, filename } = opts;
+  const title = filename ? `ADO Preview: ${filename}` : 'ADO Preview';
 
   const nonce = randomUUID().replace(/-/g, '');
 
@@ -53,7 +55,7 @@ export function getWebviewContent(opts: WebviewContentOptions): string {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="${katexCssUri}">
   <link rel="stylesheet" href="${cssUri}">
-  <title>ADO Markdown Preview</title>
+  <title>${title}</title>
 </head>
 <body>
   <div id="preview">${renderedHtml}</div>

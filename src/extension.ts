@@ -76,6 +76,8 @@ class AdoMarkdownEditorProvider implements vscode.CustomEditorProvider {
     _token: vscode.CancellationToken
   ): Promise<void> {
     const textDoc = await vscode.workspace.openTextDocument(document.uri);
+    const filename = document.uri.path.split('/').pop() ?? document.uri.fsPath;
+    webviewPanel.title = `ADO Preview: ${filename}`;
     new AdoPreviewPanel(webviewPanel, this.context.extensionUri, textDoc);
   }
 }
