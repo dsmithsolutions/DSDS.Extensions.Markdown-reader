@@ -1,6 +1,6 @@
 {
-  "name": "dsds-extensions-markdown-reader",
-  "displayName": "ADO Markdown Reader",
+  "name": "ado-markdown-reader",
+  "displayName": "ADO Markdown Preview",
   "description": "Preview Markdown files using Azure DevOps rendering conventions",
   "publisher": "dsmithsolutions",
   "version": "1.0.0",
