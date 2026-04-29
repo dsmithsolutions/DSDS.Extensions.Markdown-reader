@@ -149,6 +149,15 @@ details[open] summary { margin-bottom: 8px; }
   margin: 0 0 1em;
 }
 
+/* Responsive SVG: let diagram grow to fill available width */
+[data-mermaid] svg {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
 /* ─── KaTeX math ────────────────────────────────────────────────────── */
 [data-katex-display] {
   display: block;

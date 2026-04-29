@@ -81,12 +81,36 @@ declare const mermaid: {
       // Fallback: if mermaid.run() silently produced no SVG, show the error
       if (!node.querySelector('svg')) {
         showMermaidError(node, source, 'Rendering produced no output (check diagram syntax)');
+      } else {
+        scaleMermaidSvg(node);
       }
     } catch (err) {
       showMermaidError(node, source, err);
     }
   }
 })();
+
+/**
+ * Makes the mermaid SVG fill the available container width while preserving
+ * aspect ratio. Mermaid emits SVGs with fixed px dimensions; we patch in a
+ * viewBox (if absent) and then override width/height so CSS can scale them.
+ */
+function scaleMermaidSvg(node: HTMLElement): void {
+  const svg = node.querySelector('svg');
+  if (!svg) { return; }
+
+  const w = parseFloat(svg.getAttribute('width') ?? '0');
+  const h = parseFloat(svg.getAttribute('height') ?? '0');
+
+  // Ensure a viewBox exists so the SVG scales proportionally
+  if (w > 0 && h > 0 && !svg.getAttribute('viewBox')) {
+    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+  }
+
+  // Allow CSS to control dimensions
+  svg.setAttribute('width', '100%');
+  svg.style.height = 'auto';
+}
 
 /**
  * Replaces a mermaid diagram container with an inline error box.
