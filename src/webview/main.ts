@@ -10,7 +10,8 @@ declare const katex: {
 
 declare const mermaid: {
   initialize(config: Record<string, unknown>): void;
-  run(opts: { nodes: NodeListOf<Element> }): Promise<void>;
+  run(opts: { nodes: NodeListOf<Element> | Element[] }): Promise<void>;
+  parse(text: string, opts?: { suppressErrors?: boolean }): Promise<boolean | void>;
 };
 
 (async (): Promise<void> => {
@@ -66,8 +67,88 @@ declare const mermaid: {
     theme: 'dark',
   });
 
-  const mermaidNodes = document.querySelectorAll('.ado-mermaid');
-  if (mermaidNodes.length > 0) {
-    await mermaid.run({ nodes: mermaidNodes });
+  const mermaidNodes = document.querySelectorAll<HTMLElement>('.ado-mermaid');
+  for (const node of Array.from(mermaidNodes)) {
+    const source = node.textContent ?? '';
+    try {
+      await mermaid.parse(source, { suppressErrors: false });
+    } catch (err) {
+      showMermaidError(node, source, err);
+      continue;
+    }
+    try {
+      await mermaid.run({ nodes: [node] });
+      // Fallback: if mermaid.run() silently produced no SVG, show the error
+      if (!node.querySelector('svg')) {
+        showMermaidError(node, source, 'Rendering produced no output (check diagram syntax)');
+      } else {
+        scaleMermaidSvg(node);
+      }
+    } catch (err) {
+      showMermaidError(node, source, err);
+    }
   }
 })();
+
+/**
+ * Makes the mermaid SVG fill the available container width while preserving
+ * aspect ratio. Mermaid emits SVGs with fixed px dimensions; we patch in a
+ * viewBox (if absent) and then override width/height so CSS can scale them.
+ */
+function scaleMermaidSvg(node: HTMLElement): void {
+  const svg = node.querySelector('svg');
+  if (!svg) { return; }
+
+  const w = parseFloat(svg.getAttribute('width') ?? '0');
+  const h = parseFloat(svg.getAttribute('height') ?? '0');
+
+  // Ensure a viewBox exists so the SVG scales proportionally
+  if (w > 0 && h > 0 && !svg.getAttribute('viewBox')) {
+    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+  }
+
+  // Allow CSS to control dimensions
+  svg.setAttribute('width', '100%');
+  svg.style.height = 'auto';
+}
+
+/**
+ * Replaces a mermaid diagram container with an inline error box.
+ * Uses only DOM API (createElement + textContent) so user-supplied source is
+ * never injected as raw HTML — safe against XSS.
+ */
+function showMermaidError(node: HTMLElement, source: string, err: unknown): void {
+  const message = err instanceof Error
+    ? err.message
+    : typeof (err as { str?: string }).str === 'string'
+      ? (err as { str: string }).str
+      : String(err);
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'mermaid-error';
+
+  const title = document.createElement('p');
+  title.className = 'mermaid-error__title';
+  title.textContent = '⚠ Mermaid syntax error';
+
+  const msg = document.createElement('p');
+  msg.className = 'mermaid-error__message';
+  msg.textContent = message;
+
+  const sourceBlock = document.createElement('details');
+  sourceBlock.className = 'mermaid-error__source';
+
+  const summary = document.createElement('summary');
+  summary.textContent = 'Diagram source';
+
+  const pre = document.createElement('pre');
+  pre.textContent = source;
+
+  sourceBlock.appendChild(summary);
+  sourceBlock.appendChild(pre);
+  wrapper.appendChild(title);
+  wrapper.appendChild(msg);
+  wrapper.appendChild(sourceBlock);
+
+  node.replaceWith(wrapper);
+}
